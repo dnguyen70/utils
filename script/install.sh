@@ -331,6 +331,25 @@ function installPre-commit {
     fi
 }
 
+function installMaestro {
+    if [[ $(brew list | grep maestro) ]];then
+        if [[ $(brew outdated | grep maestro) ]];then
+            echo "maestro is outdated. Upgrading"
+            brew update
+            brew upgrade maestro
+            maestro fetch
+        else
+            echo "maestro is up to date"
+        fi
+    else
+        echo "No maestro found. Installing..."
+        brew services stop --all && brew services list
+        brew tap audaxhealthinc/anchor git@github.com:AudaxHealthInc/homebrew-anchor.git
+        brew install maestro
+        maestro fetch
+    fi
+}
+
 function checkCaskOutdated {
 
     formula=$1
@@ -476,6 +495,7 @@ installKafka
 installKafkaToll
 installPre-commit
 installKitematic
+installMaestro
 #installXquartz
 
 
